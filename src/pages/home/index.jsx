@@ -15,12 +15,19 @@ const Home = () => {
   return (
     <div>
       <div className="block p-5 rounded-md mt-5 mb-2 bg-primary w-[80%] m-auto flex-center gap-3 flex-col">
-        <h1 className="w-1/2 pt-2 mb-5 text-3xl font-bold text-center text-white">
-          Boilerplate Project React + Vite ,Tailwind + Daisy, Redux Toolkit +
-          Redux Persist, Yup + React hook form
+        <h1 className="w-1/2 pt-2 mb-5 text-xl font-bold text-center text-white">
+          Boilerplate Project React + Vite + JavaScript
+          <div className="text-sm divider text-slate-900">ROUTER</div>
+          React router dom
+          <div className="text-sm divider text-slate-900">STORE</div>
+          Redux Toolkit + Redux Persist
+          <div className="text-sm divider text-slate-900">FORM VALIDATION</div>
+          Yup + React hook form
+          <div className="text-sm divider text-slate-900">CSS</div>
+          Tailwind + Daisy
         </h1>
         <Link to="/login" className="btn btn-active btn-secondary">
-          Login with Redux
+          Simulasi Redux Store
         </Link>
       </div>
       <div className="z-50 toast">
