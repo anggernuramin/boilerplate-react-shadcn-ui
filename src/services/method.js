@@ -26,13 +26,16 @@ export const GET = async (path) => {
   }
 };
 
+// contoh jika dalam hit api membutuhkan token yang berbeda dari api lain
+const tokenValidator =
+  "qLuj3hnl5YkQp2f1iEhX024LYzvFjc+f0MNwGETFadb5wZ92bBTmH86TiOAlmTWSIGjqjVyy9mPK+950CpZYBeZtCMnCwtiuvRvxX9IwIlNf0KAmewbLrFZOEMyAnq3xr+EzhcHboz/4RFEsazzURqUn/6Xb0Nh0xx0DDN2ReNjp8dzclGR8Zgr8Dvp/AsEzZpnT4seHHyJs+CrvhKyfXMNGvoVEZWlchG4411KBSrYOFzATjuRqz+slIZOZKKq8OjOTDZsqgZgAoIiohgFnsUB/ValrreZ5ieSwZfBKDRA3XA==";
 export const POST = async (path, dataBody) => {
   try {
-    const response = await axios.post(
-      `${BASE_API}${path}`,
-      dataBody,
-      HEADERS_REQUEST
-    );
+    const response = await axios.post(`${BASE_API}${path}`, dataBody, {
+      headers: {
+        Authorization: `Bearer ${tokenValidator}`,
+      },
+    });
 
     if (response.status !== 200) {
       return response.data;

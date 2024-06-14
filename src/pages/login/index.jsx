@@ -15,6 +15,7 @@ const Login = () => {
     useState(false);
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [isShowConfirmPassword, setIsShowConfirmPassword] = useState(false);
+  const [isSubmited, setIsSubmited] = useState(false);
   const [statePassword, setStatePassword] = useState("");
   const navigate = useNavigate();
 
@@ -51,8 +52,13 @@ const Login = () => {
   });
 
   const onSubmit = (data) => {
+    setIsSubmited(true);
     dispatch(addUser(data)); // dispatch action ke store loginSlice
-    navigate("/");
+    setTimeout(() => {
+      setIsSubmited(false);
+      navigate("/");
+    }, 3000);
+    setIsSubmited(false);
   };
 
   return (
@@ -174,10 +180,11 @@ const Login = () => {
           </div>
           <div className="flex items-center justify-between">
             <button
+              disabled={isSubmited}
               type="submit"
               className="w-full px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none"
             >
-              Login
+              {isSubmited ? "Submitting" : "Login"}
             </button>
           </div>
         </form>

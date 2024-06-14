@@ -1,17 +1,6 @@
-import { useEffect, useState } from "react";
-import AUTH_SERVICE from "../../services/auth";
 import { Link } from "react-router-dom";
 
 const Home = () => {
-  const [users, setUsers] = useState([]);
-
-  useEffect(() => {
-    (async () => {
-      const res = await AUTH_SERVICE.getUsers();
-      setUsers(res?.data.slice(0, 10));
-    })();
-  }, []);
-
   return (
     <div>
       <div className="block p-5 rounded-md mt-5 mb-2 bg-primary w-[80%] m-auto flex-center gap-3 flex-col">
@@ -23,38 +12,32 @@ const Home = () => {
           Redux Toolkit + Redux Persist
           <div className="text-sm divider text-slate-900">FORM VALIDATION</div>
           Yup + React hook form
-          <div className="text-sm divider text-slate-900">CSS</div>
+          <div className="text-sm divider text-slate-900">DATA TABLE</div>
+          React data table component
+          <div className="text-sm divider text-slate-900">
+            CSS REACT COMPONENT
+          </div>
+          Material UI
+          <div className="text-sm divider text-slate-900">CUSTOM CSS</div>
           Tailwind + Daisy
         </h1>
-        <Link to="/login" className="btn btn-active btn-secondary">
-          Simulasi Redux Store
-        </Link>
+        <div className="gap-3 flex-center">
+          <Link to="/login" className="btn btn-active btn-secondary">
+            Simulasi Redux Store
+          </Link>
+
+          <Link to="/data-table-product" className="btn btn-active btn-warning">
+            Simulasi Data Table
+          </Link>
+          <Link to="/payment" className="btn btn-active btn-warning">
+            Simulasi Data Table Pagination
+          </Link>
+        </div>
       </div>
       <div className="z-50 toast">
         <div className="alert alert-info">
           <span>Daisy connected successfully.</span>
         </div>
-      </div>
-      <div className="overflow-x-auto w-[80%] m-auto">
-        <table className="table">
-          {/* head */}
-          <thead>
-            <tr>
-              <th>No</th>
-              <th>Title</th>
-              <th>Article</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users?.map((user, index) => (
-              <tr key={user?.id}>
-                <th>{index + 1}</th>
-                <td>{user.title}</td>
-                <td>{user.body}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
       </div>
     </div>
   );
