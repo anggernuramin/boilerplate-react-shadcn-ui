@@ -2,6 +2,10 @@
 import DataTable from "react-data-table-component";
 import MessageEmptyData from "../atoms/MessageEmptyData";
 import { CircularProgress } from "@mui/material";
+import { EyeIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
+import { useNavigate } from "react-router-dom";
+
+// custom style header
 let customStyles = {
   headCells: {
     style: {
@@ -22,6 +26,7 @@ let conditionalOverdue = [
 ];
 
 const DataTablePagination = ({
+  statusAksi,
   data,
   loading,
   params,
@@ -30,7 +35,22 @@ const DataTablePagination = ({
   currentRow,
   handleRowClicked,
 }) => {
+  const navigate = useNavigate();
   let { page, size, totalRows } = params;
+  // const handleAdd = () => {};
+
+  const handleEdit = (row) => {
+    // redirect ke page edit
+    navigate(`/vehicle/detail/${row.IME}`);
+  };
+
+  const handleDelete = () => {
+    // redirect ke page delete
+  };
+
+  const handleDetail = () => {
+    // redirect ke page detail
+  };
 
   let columns = [
     {
@@ -47,33 +67,46 @@ const DataTablePagination = ({
 
     keys.forEach((key) => {
       switch (key) {
-        case "status":
+        case "NOP":
           columns.push({
-            name: "Status",
-            selector: (row) => row.status,
+            name: "Nop",
+            selector: (row) => row.NOP,
             sortable: true,
             wrap: true,
+            center: true,
             // Menampilkan jika terdapat anak data pada setiap kolom
             // cell: (row) => renderPillStatus(row.status),
             // center: true,
           });
           break;
-        case "info":
+        case "PER":
           columns.push({
-            name: "Berhasil Diproses",
-            selector: (row) => row.info,
+            name: "Perusahaan",
+            selector: (row) => row.PER,
             sortable: true,
-            cell: (row) => (row.info == null ? "-" : row.info),
             center: true,
+
+            cell: (row) =>
+              row.PER ? row.PER : <span className="w-full text-center">-</span>,
           });
           break;
-        case "hari":
+        case "IME":
           columns.push({
-            name: "Hari",
-            selector: (row) => row.hari,
+            name: "IME",
+            selector: (row) => row.IME,
             sortable: true,
+            center: true,
+
             // grow: 9,
-            cell: (row) => (row.hari == null ? "-" : row.hari),
+            // cell: (row) => (row.hari == null ? "-" : row.hari),
+            // center: true,
+          });
+          break;
+        case "BAT_VOLT":
+          columns.push({
+            name: "Vot Baterai",
+            selector: (row) => row.BAT_VOLT,
+            sortable: true,
             center: true,
           });
           break;
@@ -83,8 +116,93 @@ const DataTablePagination = ({
     });
   }
 
+  // menampilkan action modal
+  switch (statusAksi) {
+    case "nonAction":
+      break;
+    case "editOnly":
+      columns.push({
+        name: "Action",
+        cell: (row) => (
+          <div
+            className="flex w-full cursor-pointer justify-evenly"
+            onClick={() => handleEdit(row)}
+          >
+            <PencilIcon className="w-5 h-5 text-orange-500" title="Ubah" />
+          </div>
+        ),
+        allowOverflow: true,
+        button: true,
+      });
+      break;
+    case "detailOnly":
+      columns.push({
+        name: "Action",
+        cell: (row) => (
+          <div
+            className="flex w-full cursor-pointer justify-evenly"
+            onClick={() => handleDetail(row)}
+          >
+            <EyeIcon className="w-5 h-5 text-blue-700" title="Detail" />
+          </div>
+        ),
+        allowOverflow: true,
+        button: true,
+      });
+      break;
+    case "editAndDetail":
+      columns.push({
+        name: "Aksi",
+        cell: (row) => (
+          <div className="flex w-full justify-evenly">
+            <EyeIcon
+              className="w-5 h-5 text-orange-500 cursor-pointer"
+              title="Detail"
+              onClick={() => handleEdit(row)}
+            />
+            <PencilIcon
+              className="w-5 h-5 text-blue-700 cursor-pointer"
+              title="Ubah"
+              onClick={() => handleEdit(row)}
+            />
+          </div>
+        ),
+        allowOverflow: true,
+        button: true,
+      });
+      break;
+    default:
+      columns.push({
+        name: "Aksi",
+        cell: (row) => (
+          <div className="flex w-full justify-evenly">
+            <EyeIcon
+              className="w-5 h-5 text-blue-700 cursor-pointer"
+              title="Detail"
+              onClick={() => handleDetail(row)}
+            />
+            |
+            <PencilIcon
+              className="w-5 h-5 text-orange-500 cursor-pointer"
+              title="Ubah"
+              onClick={() => handleEdit(row)}
+            />
+            |
+            <TrashIcon
+              className="w-5 h-5 text-red-700 cursor-pointer"
+              title="Hapus"
+              onClick={() => handleDelete(row)}
+            />
+          </div>
+        ),
+        allowOverflow: true,
+        // button: true,
+      });
+      break;
+  }
+
   return (
-    <section className="container w-full pt-10 m-auto overflow-hidden px-36 bg-slate-100 h-min">
+    <section className="w-full m-auto overflow-hidden bg-slate-100 ">
       <DataTable
         columns={columns}
         data={data || []}
@@ -100,7 +218,11 @@ const DataTablePagination = ({
         striped
         customStyles={customStyles}
         progressPending={loading}
-        progressComponent={<CircularProgress />}
+        progressComponent={
+          <div className="flex items-center justify-center w-full h-[90vh] bg-transparent">
+            <CircularProgress />
+          </div>
+        }
         noDataComponent={<MessageEmptyData />}
         expandableRows
         expandableRowExpanded={(row) => row === currentRow}

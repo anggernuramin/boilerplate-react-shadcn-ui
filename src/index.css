@@ -6,3 +6,7 @@
 .flex-center {
   @apply flex justify-center items-center;
 }
+
+.container {
+  @apply w-[90%] mx-auto;
+}

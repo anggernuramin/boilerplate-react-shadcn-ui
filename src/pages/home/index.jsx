@@ -26,10 +26,7 @@ const Home = () => {
             Simulasi Redux Store
           </Link>
 
-          <Link to="/data-table-product" className="btn btn-active btn-warning">
-            Simulasi Data Table
-          </Link>
-          <Link to="/payment" className="btn btn-active btn-warning">
+          <Link to="/vehicle" className="btn btn-active btn-warning">
             Simulasi Data Table Pagination
           </Link>
         </div>

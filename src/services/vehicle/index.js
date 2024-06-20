@@ -6,7 +6,10 @@ import { GET, POST, PUT, PATCH, DELETE, POST_LOGIN } from "../method";
 // const login = (dataBody) => POST_LOGIN(`${endpoint.reqToken}`, dataBody);
 
 // GET
-const getAllProduct = () => GET(`${endpoint.products}`);
+const getListHistoryEngine = (param) =>
+  GET(
+    `${endpoint.vehicleEngineHistory}?SEARCH=${param.search}&PAGE=${param.page}&PERPAGE=${param.size}&DATE=${param.date}`
+  );
 
 // POST
 
@@ -16,5 +19,5 @@ const getAllProduct = () => GET(`${endpoint.products}`);
 
 // DELETE
 
-const PRODUCT = { getAllProduct };
-export default PRODUCT;
+const VEHICLE = { getListHistoryEngine };
+export default VEHICLE;
