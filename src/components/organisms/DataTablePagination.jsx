@@ -55,14 +55,14 @@ const DataTablePagination = ({
   let columns = [
     {
       name: "No.",
-      cell: (row, index) => page * size + parseInt(index + 1),
+      cell: (row, index) => (page - 1) * size + parseInt(index + 1),
       width: "5em",
       right: true,
       center: true,
     },
   ];
 
-  if (data.length > 0) {
+  if (data?.length > 0) {
     let keys = Object.keys(data[0]);
 
     keys.forEach((key) => {
@@ -79,21 +79,21 @@ const DataTablePagination = ({
             // center: true,
           });
           break;
-        case "PER":
+        case "JEK":
           columns.push({
-            name: "Perusahaan",
-            selector: (row) => row.PER,
+            name: "Jenis Kendaraan",
+            selector: (row) => row.JEK,
             sortable: true,
             center: true,
 
             cell: (row) =>
-              row.PER ? row.PER : <span className="w-full text-center">-</span>,
+              row.JEK ? row.JEK : <span className="w-full text-center">-</span>,
           });
           break;
-        case "IME":
+        case "C_NAME":
           columns.push({
-            name: "IME",
-            selector: (row) => row.IME,
+            name: "Perusahaan",
+            selector: (row) => row.C_NAME,
             sortable: true,
             center: true,
 

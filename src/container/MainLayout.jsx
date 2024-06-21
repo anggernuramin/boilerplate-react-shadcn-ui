@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
 // import Header from "../../../components/organisms/Header";
@@ -7,13 +7,12 @@ import { useEffect } from "react";
 function Layout() {
   // mengambil nilai dari store
   const isLogin = useSelector((state) => state.user.isLogin);
-  let navigate = useNavigate();
 
   useEffect(() => {
     if (!isLogin) {
-      navigate("/login");
+      // navigate("/login");
     } else {
-      navigate("/");
+      // navigate("/");
     }
   }, [isLogin]);
 

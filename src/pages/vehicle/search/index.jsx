@@ -1,20 +1,28 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate, useSearchParams } from "react-router-dom";
-import VEHICLE from "../../services/vehicle";
-import DataTablePagination from "../../components/organisms/DataTablePagination";
-import { useDispatch } from "react-redux";
-const VehicleHistory = () => {
+import VEHICLE from "../../../services/vehicle";
+import DataTablePagination from "../../../components/organisms/DataTablePagination";
+import useDebounce from "../../../hooks/UseDebounce";
+
+const SearchVehicleHistory = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  let query = searchParams.get("query");
   const navigate = useNavigate();
   const [currentRow, setCurrentRow] = useState(null);
   const [loading, setLoading] = useState(false);
+
   // sesauikan data params yang dibutuhkan
   const [params, setParams] = useState({
     search: "",
     page: 1,
     size: 10,
   });
-  let [dataPembayaran, setDataPembayaran] = useState([]);
+
+  const [dataPembayaran, setDataPembayaran] = useState([]);
+
+  // Menentukan delay saat hit api search
+  const debouncedQuery = useDebounce(query, 500);
 
   const fetchData = async (params) => {
     setLoading(true);
@@ -64,13 +72,24 @@ const VehicleHistory = () => {
     fetchData(params);
   }, []);
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  const handleKeywordChange = (e) => {
-    // query = e.target.value;
-    // changeSearchParams(query);
+  useEffect(() => {
+    if (debouncedQuery) {
+      const updatedParams = { ...params, search: debouncedQuery };
+      setParams(updatedParams);
+      fetchData(updatedParams);
+    } else {
+      const updatedParams = { ...params, search: "", page: 1, size: 10 };
+      setParams(updatedParams);
+      fetchData(updatedParams);
+    }
+  }, [debouncedQuery]);
 
-    setSearchParams(e.target.value);
-    navigate("/vehicle/search?query=" + e.target.value);
+  const changeSearchParams = (query) => {
+    setSearchParams({ query: query });
+  };
+  const handleKeywordChange = (e) => {
+    query = e.target.value;
+    changeSearchParams(query);
   };
 
   return (
@@ -81,7 +100,8 @@ const VehicleHistory = () => {
           <label className="flex items-center w-full gap-2 input input-bordered">
             <input
               type="search"
-              value={searchParams}
+              autoFocus
+              value={query}
               onChange={handleKeywordChange}
               className="grow"
               placeholder="Search"
@@ -112,6 +132,7 @@ const VehicleHistory = () => {
           handlePageChange={handlePageChange}
           handlePerRowsChange={handlePerRowsChange}
           handleRowClicked={handleRowClicked}
+          handleSubmitValidator={handleSubmitValidator}
         />
       </div>
       <Outlet />
@@ -119,4 +140,4 @@ const VehicleHistory = () => {
   );
 };
 
-export default VehicleHistory;
+export default SearchVehicleHistory;

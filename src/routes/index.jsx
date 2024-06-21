@@ -7,6 +7,7 @@ const DetailVehicle = lazy(() => import("@pages/vehicle/detail"));
 const Layout = lazy(() => import("@container/MainLayout"));
 const Login = lazy(() => import("@pages/login"));
 const NotFound = lazy(() => import("@components/molecules/NotFound"));
+const SearchVehicleHistory = lazy(() => import("@pages/vehicle/search"));
 
 export const router = createBrowserRouter([
   {
@@ -28,6 +29,10 @@ export const router = createBrowserRouter([
             element: <DetailVehicle />,
           },
         ],
+      },
+      {
+        path: "/vehicle/search",
+        element: <SearchVehicleHistory />,
       },
     ],
   },

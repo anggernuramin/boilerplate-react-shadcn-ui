@@ -10,7 +10,7 @@ const endpoint = {
   // companies: `api/admin/companies`,
 
   // contoh endpoint yang membutuhkan pagination
-  vehicleEngineHistory: "/secured/EnginelogsDateSearch",
+  vehicleEngineHistory: "/secured/regall",
 };
 
 export default endpoint;

@@ -6,9 +6,13 @@ import { GET, POST, PUT, PATCH, DELETE, POST_LOGIN } from "../method";
 // const login = (dataBody) => POST_LOGIN(`${endpoint.reqToken}`, dataBody);
 
 // GET
-const getListHistoryEngine = (param) =>
+const getVehicleList = (param) =>
   GET(
-    `${endpoint.vehicleEngineHistory}?SEARCH=${param.search}&PAGE=${param.page}&PERPAGE=${param.size}&DATE=${param.date}`
+    `${
+      endpoint.vehicleEngineHistory
+    }?SEARCH=${param.search.toUpperCase()}&PAGE=${param.page}&PERPAGE=${
+      param.size
+    }`
   );
 
 // POST
@@ -19,5 +23,5 @@ const getListHistoryEngine = (param) =>
 
 // DELETE
 
-const VEHICLE = { getListHistoryEngine };
+const VEHICLE = { getVehicleList };
 export default VEHICLE;
