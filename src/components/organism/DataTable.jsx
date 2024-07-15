@@ -1,37 +1,61 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
 const DataTable = () => {
   const [editIdx, setEditIdx] = useState(-1);
   const [rows, setRows] = useState([
     {
       id: 1,
-      invoice: "INV001",
-      status: "Paid",
-      method: "Credit Card",
-      amount: "$250.00",
+      kode: "A",
+      namaLayanan: "Teller",
+      sla: "2",
+      parent: [
+        { id: 1, kode: "A", namaLayanan: "Teller", sla: "2" },
+        { id: 2, kode: "B", namaLayanan: "Customer Service", sla: "4" },
+        { id: 3, kode: "C", namaLayanan: "Layanan 3", sla: "0" },
+      ],
+      status: "aktif",
     },
     {
       id: 2,
-      invoice: "INV002",
-      status: "Pending",
-      method: "PayPal",
-      amount: "$150.00",
+      kode: "B",
+      namaLayanan: "Customer Service",
+      sla: "4",
+      parent: [
+        { id: 1, kode: "A", namaLayanan: "Teller", sla: "2" },
+        { id: 2, kode: "B", namaLayanan: "Customer Service", sla: "4" },
+        { id: 3, kode: "C", namaLayanan: "Layanan 3", sla: "0" },
+      ],
+      status: "tidak-aktif",
     },
     {
       id: 3,
-      invoice: "INV003",
-      status: "Overdue",
-      method: "Bank Transfer",
-      amount: "$300.00",
+      kode: "C",
+      namaLayanan: "Layanan 3",
+      sla: "0",
+      parent: [
+        { id: 1, kode: "A", namaLayanan: "Teller", sla: "2" },
+        { id: 2, kode: "B", namaLayanan: "Customer Service", sla: "4" },
+        { id: 3, kode: "C", namaLayanan: "Layanan 3", sla: "0" },
+      ],
+      status: "aktif",
     },
   ]);
   const [editRows, setEditRows] = useState([...rows]);
@@ -54,6 +78,20 @@ const DataTable = () => {
     setEditRows(updatedRows);
   };
 
+  // Handler untuk mengupdate nilai dropdown
+  const handleDropdownChange = (parentIdx, idx) => {
+    const updatedRows = [...editRows];
+    updatedRows[idx].parent = [rows[parentIdx]];
+    setEditRows(updatedRows);
+  };
+
+  // Handler untuk mengupdate status checkbox
+  const handleCheckboxChange = (e, idx) => {
+    const updatedRows = [...editRows];
+    updatedRows[idx].status = e.target.checked ? "aktif" : "tidak-aktif";
+    setEditRows(updatedRows);
+  };
+
   // Handler untuk mengirim data
   const handleSend = () => {
     // Tambahkan logika pengiriman data di sini
@@ -67,80 +105,109 @@ const DataTable = () => {
   };
 
   return (
-    <div className="w-[60%] mx-auto">
+    <div className="w-[60%] mx-auto h-screen flex justify-center items-center flex-col gap-3">
+      <h2 className="text-3xl font-semibold text-start">Daftar Layanan</h2>
       <Table>
-        <TableCaption>A list of your recent invoices.</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">Invoice</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Method</TableHead>
-            <TableHead className="text-right">Amount</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead className="w-[100px]">No</TableHead>
+            <TableHead>Kode</TableHead>
+            <TableHead>NAMA LAYANAN</TableHead>
+            <TableHead>SLA (Tunggu)</TableHead>
+            <TableHead>PARENT</TableHead>
+            <TableHead>AKTIF</TableHead>
+            <TableHead>AKSI</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {editRows.map((row, idx) => (
             <TableRow key={row.id}>
-              <TableCell className="font-medium">
+              <TableCell>{idx + 1}</TableCell>
+              <TableCell>
                 {editIdx === idx ? (
                   <input
                     type="text"
-                    value={row.invoice}
-                    onChange={(e) => handleChange(e, idx, "invoice")}
+                    value={row.kode}
+                    onChange={(e) => handleChange(e, idx, "kode")}
                   />
                 ) : (
-                  row.invoice
+                  row.kode
                 )}
               </TableCell>
               <TableCell>
                 {editIdx === idx ? (
                   <input
                     type="text"
-                    value={row.status}
-                    onChange={(e) => handleChange(e, idx, "status")}
+                    value={row.namaLayanan}
+                    onChange={(e) => handleChange(e, idx, "namaLayanan")}
                   />
                 ) : (
-                  row.status
+                  row.namaLayanan
                 )}
               </TableCell>
               <TableCell>
                 {editIdx === idx ? (
                   <input
                     type="text"
-                    value={row.method}
-                    onChange={(e) => handleChange(e, idx, "method")}
+                    value={row.sla}
+                    onChange={(e) => handleChange(e, idx, "sla")}
                   />
                 ) : (
-                  row.method
+                  row.sla
                 )}
               </TableCell>
-              <TableCell className="text-right">
+              <TableCell>
                 {editIdx === idx ? (
-                  <input
-                    type="text"
-                    value={row.amount}
-                    onChange={(e) => handleChange(e, idx, "amount")}
-                  />
+                  <DropdownMenu>
+                    <DropdownMenuTrigger>
+                      <Button>Select Parent</Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuLabel>Pilih Parent</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      {rows.map((parent, parentIdx) => (
+                        <DropdownMenuItem
+                          key={parent.id}
+                          onSelect={() => handleDropdownChange(parentIdx, idx)}
+                        >
+                          {parent.namaLayanan}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 ) : (
-                  row.amount
+                  row.parent.map((parent) => parent.namaLayanan).join(", ")
                 )}
               </TableCell>
-              <TableCell className="text-right">
-                <button onClick={() => handleEdit(idx)}>Edit</button>
+              <TableCell>
+                {editIdx === idx ? (
+                  <Checkbox
+                    checked={row.status === "aktif"}
+                    onChange={(e) => handleCheckboxChange(e, idx)}
+                  />
+                ) : (
+                  <Checkbox
+                    className="w-4 h-4 border-2 border-slate-800"
+                    checked={false}
+                    onChange={(e) => handleCheckboxChange(e, idx)}
+                  />
+                )}
+              </TableCell>
+              <TableCell>
+                <Button onClick={() => handleEdit(idx)}>Edit</Button>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
       <div className="flex justify-end mt-4">
-        <button className="mr-4" onClick={handleSave}>
+        <Button className="mr-4" onClick={handleSave}>
           Save
-        </button>
-        <button className="mr-4" onClick={handleSend}>
+        </Button>
+        <Button className="mr-4" onClick={handleSend}>
           Send
-        </button>
-        <button onClick={handleReload}>Reload</button>
+        </Button>
+        <Button onClick={handleReload}>Reload</Button>
       </div>
     </div>
   );
