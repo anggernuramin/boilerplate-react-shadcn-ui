@@ -1,12 +1,4 @@
 @tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* custom class,tetapi tetap menggunakan class pada tailwind */
-.flex-center {
-  @apply flex justify-center items-center;
-}
-
-.container {
-  @apply w-[90%] mx-auto;
-}
+  @tailwind components;
+  @tailwind utilities;
+  
