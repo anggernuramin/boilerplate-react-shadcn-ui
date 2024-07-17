@@ -2,49 +2,44 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { useState } from "react";
-import PasswordPopover from "../../components/molecules/PasswordPopover";
-import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addUser } from "@features/auth/loginSlice";
 import ErrorInputForm from "../../components/atoms/ErrorInputForm";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faRightToBracket,
+  faChevronCircleRight,
+  faEye,
+  faEyeSlash,
+} from "@fortawesome/free-solid-svg-icons";
+
+import { Input } from "@/components/ui/input";
 
 const Login = () => {
   const dispatch = useDispatch();
-  const [isVisiblePasswordPopover, setIsVisiblePasswordPopover] =
-    useState(false);
   const [isShowPassword, setIsShowPassword] = useState(false);
-  const [isShowConfirmPassword, setIsShowConfirmPassword] = useState(false);
+  useState(false);
   const [isSubmited, setIsSubmited] = useState(false);
-  const [statePassword, setStatePassword] = useState("");
   const navigate = useNavigate();
 
   const formValues = {
     username: "",
-    email: "",
     password: "",
-    confirmPassword: "",
-    remember: false,
   };
 
   const schema = yup.object().shape({
     username: yup.string().required("Username is required"),
-    email: yup.string().email("Invalid email").required("Email is required"),
     password: yup.string().required("Password is required"),
-    confirmPassword: yup
-      .string()
-      .oneOf([yup.ref("password"), null], "Passwords must match")
-      .required("Confirm Password is required"),
-    remember: yup.boolean(),
   });
 
   const {
     register,
     handleSubmit,
-    setValue,
-    setError,
-    getValues,
-    clearErrors,
+    // setValue,
+    // setError,
+    // getValues,
+    // clearErrors,
     formState: { errors },
   } = useForm({
     defaultValues: formValues,
@@ -56,140 +51,89 @@ const Login = () => {
     dispatch(addUser(data)); // dispatch action ke store loginSlice
     setTimeout(() => {
       setIsSubmited(false);
-      navigate("/");
+      navigate("/dashboard");
     }, 3000);
     setIsSubmited(false);
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
-        <h2 className="mb-6 text-2xl font-bold text-center">Login</h2>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="mb-4">
-            <label
-              htmlFor="username"
-              className="block mb-2 text-sm font-bold text-gray-700"
-            >
-              Username
-            </label>
-            <input
-              name="username"
-              type="text"
-              id="username"
-              className="w-full input input-bordered"
-              {...register("username")}
-            />
+    <section className="flex items-start justify-center min-h-screen bg-white ">
+      <div className="w-full max-w-md mt-20 ">
+        <div className="w-full overflow-hidden bg-white border rounded-md border-slate-600">
+          <header className="flex items-center gap-1 py-[6px] px-3 text-white bg-primary">
+            <FontAwesomeIcon icon={faChevronCircleRight} size="1x" />
 
-            <ErrorInputForm statusError={errors.username} />
-          </div>
-          <div className="mb-4">
-            <label
-              htmlFor="email"
-              className="block mb-2 text-sm font-bold text-gray-700"
-            >
-              Email
-            </label>
-            <input
-              name="email"
-              type="email"
-              id="email"
-              className="w-full input input-bordered"
-              {...register("email")}
-            />
-            <ErrorInputForm statusError={errors.email} />
-          </div>
-          <div className="relative mb-4">
-            <div
-              onClick={() => setIsShowPassword(!isShowPassword)}
-              className="absolute right-0 z-10 p-2 cursor-pointer top-8 "
-            >
-              {isShowPassword ? (
-                <EyeIcon className="w-10 h-6 transition-all hover:text-blue-600 " />
-              ) : (
-                <EyeSlashIcon className="w-10 h-6 transition-all hover:text-blue-600 " />
-              )}
+            <h1 className="text-lg">Bank BRI Dashboard Pusat</h1>
+          </header>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="px-4 pt-5 pb-2 ">
+              <div className="mb-4">
+                <label
+                  htmlFor="username"
+                  className="block mb-2 text-sm font-bold text-gray-700"
+                >
+                  Username
+                </label>
+                <Input
+                  name="username"
+                  type="text"
+                  id="username"
+                  {...register("username")}
+                />
+                <ErrorInputForm statusError={errors.username} />
+              </div>
+
+              <div className="relative mb-4">
+                <div
+                  onClick={() => setIsShowPassword(!isShowPassword)}
+                  className="absolute z-10 p-2 cursor-pointer right-2 top-7 "
+                >
+                  {isShowPassword ? (
+                    <FontAwesomeIcon
+                      icon={faEye}
+                      className="transition-all hover:text-primary"
+                    />
+                  ) : (
+                    <FontAwesomeIcon
+                      icon={faEyeSlash}
+                      className="transition-all hover:text-primary "
+                    />
+                  )}
+                </div>
+
+                <label
+                  htmlFor="password"
+                  className="block mb-2 text-sm font-bold text-gray-700"
+                >
+                  Password
+                </label>
+                <Input
+                  name="password"
+                  type={isShowPassword ? "text" : "password"}
+                  id="password"
+                  {...register("password")}
+                />
+                <ErrorInputForm statusError={errors.password} />
+              </div>
             </div>
-            <label
-              htmlFor="password"
-              className="block mb-2 text-sm font-bold text-gray-700"
-            >
-              Password
-            </label>
-            <input
-              name="password"
-              type={isShowPassword ? "text" : "password"}
-              id="password"
-              className="w-full input input-bordered"
-              onFocus={() => setIsVisiblePasswordPopover(true)}
-              onBlur={() => setIsVisiblePasswordPopover(false)}
-              onChange={(e) => setStatePassword(e.target.value)}
-            />
-            {/* Password Popover */}
-            <PasswordPopover
-              label="password" // sesuai dengan default value react - hook -form
-              value={statePassword}
-              isVisible={isVisiblePasswordPopover}
-              setError={setError}
-              setValue={setValue}
-              clearErrors={clearErrors}
-              getValues={getValues}
-            />
-            <ErrorInputForm statusError={errors.password} />
-          </div>
-          <div className="relative mb-4">
-            <div
-              onClick={() => setIsShowConfirmPassword(!isShowConfirmPassword)}
-              className="absolute right-0 z-10 p-2 cursor-pointer top-8 "
-            >
-              {isShowConfirmPassword ? (
-                <EyeIcon className="w-10 h-6 transition-all hover:text-blue-600 " />
-              ) : (
-                <EyeSlashIcon className="w-10 h-6 transition-all hover:text-blue-600 " />
-              )}
+
+            <div className="flex px-4 items-center justify-between w-full bg-[#F5F5F5] h-16">
+              <button
+                disabled={isSubmited}
+                type="submit"
+                className="flex items-center justify-center gap-2 px-4 py-2 text-lg text-white rounded-md focus:outline-none bg-primary"
+              >
+                <FontAwesomeIcon icon={faRightToBracket} />
+                {isSubmited ? "Submitting" : "Login"}
+              </button>
             </div>
-            <label
-              htmlFor="confirmPassword"
-              className="block mb-2 text-sm font-bold text-gray-700"
-            >
-              Confirm Password
-            </label>
-            <input
-              name="confirmPassword"
-              type={isShowConfirmPassword ? "text" : "password"}
-              id="confirmPassword"
-              className="w-full input input-bordered"
-              {...register("confirmPassword")}
-            />
-            <ErrorInputForm statusError={errors.confirmPassword} />
-          </div>
-          <div className="flex items-center gap-2 mb-4">
-            <input
-              name="remember"
-              type="checkbox"
-              id="remember"
-              className="text-blue-500"
-              {...register("remember")}
-            />
-            <label
-              htmlFor="remember"
-              className="block mb-2 text-sm font-bold text-gray-700"
-            >
-              Remember me
-            </label>
-          </div>
-          <div className="flex items-center justify-between">
-            <button
-              disabled={isSubmited}
-              type="submit"
-              className="w-full px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none"
-            >
-              {isSubmited ? "Submitting" : "Login"}
-            </button>
-          </div>
-        </form>
+          </form>
+        </div>
+        <div className="w-full mt-5 ">
+          <p className="text-xs text-end">Versi 1.0.7</p>
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 

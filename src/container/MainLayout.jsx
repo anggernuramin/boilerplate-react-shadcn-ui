@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
+import Navbar from "@/components/molecules/Navbar";
 // import Header from "../../../components/organisms/Header";
 // import Aside from "../../../components/organisms/Aside";
 
@@ -18,7 +19,7 @@ function Layout() {
 
   return (
     <>
-      <aside>{/* Sidebar */}</aside>
+      <Navbar />
       <main className="flex flex-col ">
         {/* Header */}
         <section>

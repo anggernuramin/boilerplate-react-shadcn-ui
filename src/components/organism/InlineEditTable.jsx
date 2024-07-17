@@ -118,8 +118,8 @@ const customStyles = {
       fontSize: ".9rem",
       textAlign: "center",
       display: "flex",
-      "justify-content": "center",
-      "align-items": "center",
+      justifyContent: "center",
+      alignItems: "center",
       padding: "8px", // tambahkan padding jika diperlukan
     },
   },
@@ -127,7 +127,8 @@ const customStyles = {
     style: {
       borderBottom: "1px solid rgba(0,0,0,.1)",
       borderInline: "1px solid rgba(0,0,0,.1)",
-      padding: "8px",
+      paddingInline: "8px",
+      paddingBlock: "0px",
       textAlign: "center",
     },
   },
@@ -153,56 +154,53 @@ const InlineEditTable = () => {
   const columns = [
     {
       name: "Kode Layanan",
-      selector: "kode_layanan",
-      cell: (row) => <div>{row.kode_layanan}</div>,
+      cell: (row) => (
+        <div className="w-full text-lg text-center">{row.kode_layanan}</div>
+      ),
     },
     {
       name: "Nama Layanan",
-      selector: "nama_layanan",
       cell: (row) => (
         <EditableCell
           value={row.nama_layanan}
           onChange={(value) => handleEdit(row.ID, "nama_layanan", value)}
           editing={row.editing}
+          type="text"
         />
       ),
     },
     {
       name: "SLA Layanan",
-      selector: "sla_layanan",
       cell: (row) => (
         <EditableCell
           value={row.sla_layanan}
           onChange={(value) => handleEdit(row.ID, "sla_layanan", value)}
           editing={row.editing}
+          type="number"
         />
       ),
     },
     {
       name: "Nama Parent",
-      selector: "nama_parent",
       cell: (row) => (
         <EditableCell
-          value={row.nama_parent}
+          value={row.parent_id}
+          displayValue={row.nama_parent}
           onChange={(value) => handleEdit(row.ID, "parent_id", value)}
-          editing={row.editing}
-          selectOptions={
-            row.nama_parent == ""
-              ? parent.map((p) => ({ value: p.ID, label: p.value }))
-              : null
-          }
+          editing={row.editing && !row.nama_parent}
+          type="select"
+          selectOptions={parent.map((p) => ({ value: p.ID, label: p.value }))}
         />
       ),
     },
     {
       name: "Aktif",
-      selector: "aktif",
       cell: (row) => (
         <EditableCell
-          value={row.aktif === "1"} // Convert to boolean for checkbox
-          onChange={(value) => handleEdit(row.ID, "aktif", value ? "1" : "0")} // Convert boolean to string "1" or "0"
+          value={row.aktif === "1"}
+          onChange={(value) => handleEdit(row.ID, "aktif", value ? "1" : "0")}
           editing={row.editing}
-          checkbox
+          type="checkbox"
         />
       ),
     },
@@ -240,9 +238,10 @@ const InlineEditTable = () => {
 
 const EditableCell = ({
   value,
+  displayValue,
   onChange,
   editing,
-  checkbox,
+  type,
   selectOptions,
 }) => {
   const handleInputChange = (e) => {
@@ -257,61 +256,65 @@ const EditableCell = ({
     onChange(e.target.value);
   };
 
-  return (
-    <div className="relative">
-      {editing ? (
-        selectOptions ? (
-          <select
-            value={value} // Memastikan nilai yang ditampilkan adalah nilai saat ini
-            onChange={handleSelectChange} // Menangani perubahan di dropdown
-            className="p-1 border rounded outline-none border-slate-500 w-[100%]"
-          >
-            {selectOptions.map((option) => (
-              <option key={option.ID} value={option.value}>
-                {option.label} {/* Menampilkan nama parent */}
-              </option>
-            ))}
-          </select>
-        ) : checkbox ? (
+  const renderEditableCell = () => {
+    if (!editing) {
+      return (
+        <div className="p-1 overflow-hidden border border-transparent rounded cursor-pointer w-[100%]">
+          {type === "checkbox" ? (
+            <input
+              type="checkbox"
+              checked={value}
+              readOnly
+              className="border rounded outline-none"
+            />
+          ) : (
+            displayValue || value
+          )}
+        </div>
+      );
+    }
+
+    switch (type) {
+      case "text":
+      case "number":
+        return (
+          <input
+            type={type}
+            value={value}
+            onChange={handleInputChange}
+            className="p-1 overflow-hidden border rounded outline-none border-slate-500 w-[100%]"
+          />
+        );
+      case "checkbox":
+        return (
           <input
             type="checkbox"
             checked={value}
             onChange={handleCheckboxChange}
             className="border rounded outline-none w-[100%]"
           />
-        ) : (
-          <input
-            type="text"
+        );
+      case "select":
+        return (
+          <select
             value={value}
-            onChange={handleInputChange}
-            className="p-1 overflow-hidden border rounded outline-none  border-slate-500 w-[100%]"
-          />
-        )
-      ) : (
-        <div className="p-1 overflow-hidden border border-transparent rounded cursor-pointer w-[100%]">
-          {checkbox ? (
-            value ? (
-              <input
-                type="checkbox"
-                checked={true}
-                onChange={handleCheckboxChange}
-                className="border rounded outline-none"
-              />
-            ) : (
-              <input
-                type="checkbox"
-                checked={false}
-                onChange={handleCheckboxChange}
-                className="border rounded outline-none"
-              />
-            )
-          ) : (
-            value
-          )}
-        </div>
-      )}
-    </div>
-  );
+            onChange={handleSelectChange}
+            className="p-1 border rounded outline-none border-slate-500 w-[100%]"
+          >
+            {selectOptions &&
+              selectOptions?.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+          </select>
+        );
+      default:
+        return null;
+    }
+  };
+
+  return <div className="relative">{renderEditableCell()}</div>;
 };
 
 const EditButton = ({ row, toggleEditing, editing }) => {
