@@ -12,3 +12,8 @@
 .flex-center {
   @apply flex items-center justify-center;
 }
+
+/* custom apexchart title */
+.apexcharts-title-text {
+  text-decoration: underline;
+}
