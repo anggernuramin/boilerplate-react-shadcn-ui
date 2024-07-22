@@ -58,7 +58,7 @@ const Login = () => {
 
   return (
     <section className="flex items-start justify-center min-h-screen bg-white ">
-      <div className="w-full max-w-md mt-20 ">
+      <div className="w-full max-w-md mt-16 ">
         <div className="w-full overflow-hidden bg-white border rounded-md border-slate-600">
           <header className="flex items-center gap-1 py-[6px] px-3 text-white bg-primary">
             <FontAwesomeIcon icon={faChevronCircleRight} size="1x" />
